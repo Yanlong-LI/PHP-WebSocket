@@ -64,12 +64,7 @@
             console.log("已成功建立连接");
         }
         chat.onmessage = function (event) {
-
-<<<<<<< Updated upstream
-            $("#messageBox").append("<div>"+$.parseJSON( event.data ).message+"</div>");
-=======
             $("#messageBox").append("<div class='message'>"+$.parseJSON( event.data ).message+"</div>");
->>>>>>> Stashed changes
         };
        $("#send").click(function () {
 
