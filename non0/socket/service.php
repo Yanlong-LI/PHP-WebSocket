@@ -7,7 +7,6 @@
  * APPLICATION:
  */
 namespace non0\socket;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class service
@@ -101,7 +100,7 @@ class service
                                     self::getDispatcher()->dispatch('default',new message($data));
                                 }
 //                                if(is_array($data) && isset(self::$function->$data['type'])){
-                                    $event = self::getDispatcher()->dispatch($data['type'],new message($data));
+                                    $event = self::getDispatcher()->dispatch($data['type'],new message($data,$value));
 //                                }
                             }
                         }

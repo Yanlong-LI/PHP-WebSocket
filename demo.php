@@ -19,6 +19,12 @@ $socket = new service($config);
 //注册服务
 $socket::Register('system',function (message $message){
     echo $message->get("message").PHP_EOL;
+
+    $data = [];
+    $data['time'] = time();
+    $data['type']='system';
+    $data['message']=$message->get("message");
+    $message->send($data);
 });
 $socket::Register('message',function (message $message){
     echo $message->get("message").PHP_EOL;

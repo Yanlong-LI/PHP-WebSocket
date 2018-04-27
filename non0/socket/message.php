@@ -11,14 +11,17 @@
 namespace non0\socket;
 
 use Symfony\Component\EventDispatcher\Event;
+use non0\socket\socket;
 
 class message extends Event
 {
     protected $message;
+    protected $socket;
 
-    function __construct($data='')
+    function __construct($data = '', $socket)
     {
         $this->message = $data;
+        $this->socket = $socket;
     }
 
     function getMessage()
@@ -29,5 +32,11 @@ class message extends Event
     function get($name)
     {
         return $this->message[$name];
+    }
+
+    function send($data = [])
+    {
+        $socket = new socket();
+        socket_write($this->socket,$socket->code(json_encode($data)));
     }
 }
