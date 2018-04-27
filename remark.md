@@ -1,13 +1,34 @@
 <center>PHP SOCKET</center>
 
-这是一个简单而不简单的PHP WebSocket Demo
-简单是没有过多的封装和处理，不简单是因为项目加入composer了
-相对不会composer的阅读者来说可能会有些复杂
+没错
 
-composer使用方法
+这就是``simplify``分支
 
-``
-composer non0/socket
-``
+是的你没有看错
 
-普通使用方法我将会创建一个``simplify``分支来处理
+<<<<<<< Updated upstream
+运行方式
+```shell
+php demo.php
+```
+
+默认监听127.0.0.1:3000
+
+如需修改可直接修改配置文件
+
+在浏览器中打开
+    
+    index.html
+=======
+想简单使用？
+
+请看 ``simplify``分支 来处理
+
+使用方式
+
+```php
+php demo.php
+```
+
+请确保你已经php程序的bin加入path环境变量，否则请使用你的php绝对路径
+>>>>>>> Stashed changes

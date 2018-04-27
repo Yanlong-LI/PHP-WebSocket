@@ -5,16 +5,56 @@
     <meta charset="UTF-8">
     <title>chatDemo</title>
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #messageBox{
+            overflow:auto
+        }
+        .message{
+            background: aquamarine;
+            color: black;
+            margin: 1rem  2rem;
+            padding: 1rem;
+            scroll-padding-left: 1px;
+        }
+        #userEdit{
+            border-top: 1px solid #33cc01;
+            width: 100%;
+            background: rgba(194, 154, 163, 0.21);
+            position: absolute;
+            bottom: 0;
+        }
+        #userEdit #input{
+            width: 80%;
+            font-size: 2rem;
+            border: none;
+            display: block;
+            height: 4rem;
+            float: left;
+        }
+        #userEdit input[type=button]{
+            float: right;
+            border: none;
+            background: #33cc01;
+            width: 20%;
+            font-size: 2rem;
+            height: 4rem;
+            vertical-align:text-bottom;
+        }
+    </style>
 </head>
 <body>
     <div id="messageBox">
 
     </div>
 <div id="userEdit">
-    <input type="text" id="input">
+    <textarea type="text" id="input"></textarea>
     <input type="button" value="发送" id="send">
-    <input type="button" value="发送" id="send2">
-    <input type="button" value="发送" id="send3">
+    <!--<input type="button" value="发送" id="send2">-->
+    <!--<input type="button" value="发送" id="send3">-->
 </div>
 </body>
 <script>
@@ -25,7 +65,11 @@
         }
         chat.onmessage = function (event) {
 
-            $("#messageBox").append("<div>"+$.parseJSON( event.data ).send+"</div>");
+<<<<<<< Updated upstream
+            $("#messageBox").append("<div>"+$.parseJSON( event.data ).message+"</div>");
+=======
+            $("#messageBox").append("<div class='message'>"+$.parseJSON( event.data ).message+"</div>");
+>>>>>>> Stashed changes
         };
        $("#send").click(function () {
 
@@ -54,6 +98,7 @@
             chat.send(JSON.stringify($msg));
             $("#input").val("");
         });
+        $("#messageBox").css('height', $(window).height());
     })
 
 </script>
