@@ -6,28 +6,32 @@
     <title>chatDemo</title>
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
         }
-        #messageBox{
-            overflow:auto
+
+        #messageBox {
+            overflow: auto
         }
-        .message{
+
+        .message {
             background: aquamarine;
             color: black;
-            margin: 1rem  2rem;
+            margin: 1rem 2rem;
             padding: 1rem;
             scroll-padding-left: 1px;
         }
-        #userEdit{
+
+        #userEdit {
             border-top: 1px solid #33cc01;
             width: 100%;
             background: rgba(194, 154, 163, 0.21);
             position: absolute;
             bottom: 0;
         }
-        #userEdit #input{
+
+        #userEdit #input {
             width: 80%;
             font-size: 2rem;
             border: none;
@@ -35,21 +39,22 @@
             height: 4rem;
             float: left;
         }
-        #userEdit input[type=button]{
+
+        #userEdit input[type=button] {
             float: right;
             border: none;
             background: #33cc01;
             width: 20%;
             font-size: 2rem;
             height: 4rem;
-            vertical-align:text-bottom;
+            vertical-align: text-bottom;
         }
     </style>
 </head>
 <body>
-    <div id="messageBox">
+<div id="messageBox">
 
-    </div>
+</div>
 <div id="userEdit">
     <textarea type="text" id="input"></textarea>
     <input type="button" value="发送" id="send">
@@ -60,35 +65,40 @@
 <script>
     $(function () {
         chat = new WebSocket("ws://127.0.0.1:3000");
-        if(chat.readyState==1){
+        if (chat.readyState == 1) {
             console.log("已成功建立连接");
         }
         chat.onmessage = function (event) {
-            $("#messageBox").append("<div class='message'>"+$.parseJSON( event.data ).message+"</div>");
+            if ($.parseJSON(event.data).type == 'register') {
+                $("#messageBox").append("<div class='message'>REGISTER:" + $.parseJSON(event.data).message + "</div>");
+                $msg = new Object();
+                $msg.type = 'getUsers';
+                $msg.time = ((new Date()).valueOf());
+                chat.send(JSON.stringify($msg));
+            } else if($.parseJSON(event.data).type == 'users'){
+                str = "";
+                for(i in $.parseJSON(event.data).data){
+                    str+=$.parseJSON(event.data).data[i].name+',';
+                }
+                $("#messageBox").append("<div class='message'>当前在线:"+ str+"</div>");
+            }else {
+                $("#messageBox").append("<div class='message'>" + $.parseJSON(event.data).message + "</div>");
+            }
         };
-       $("#send").click(function () {
-
-           $msg = new Object();
-           $msg.type='system';
-           $msg.time = ((new Date()).valueOf()).toString().substr(-3);
-           $msg.message = $("#input").val();
-           chat.send(JSON.stringify($msg));
-            $("#input").val("");
-        });
-        $("#send2").click(function () {
-
+        chat.onopen = function (event) {
             $msg = new Object();
-            $msg.type='message';
-            $msg.time = ((new Date()).valueOf()).toString().substr(-3);
-            $msg.message = $("#input").val();
+            $msg.type = 'register';
+            $msg.time = ((new Date()).valueOf());
+            $msg.name = '王大爷';
             chat.send(JSON.stringify($msg));
-            $("#input").val("");
-        });
-        $("#send3").click(function () {
+
+
+        }
+        $("#send").click(function () {
 
             $msg = new Object();
-            $msg.type='dd';
-            $msg.time = ((new Date()).valueOf()).toString().substr(-3);
+            $msg.type = 'group';
+            $msg.time = ((new Date()).valueOf());
             $msg.message = $("#input").val();
             chat.send(JSON.stringify($msg));
             $("#input").val("");

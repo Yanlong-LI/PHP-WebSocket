@@ -11,26 +11,52 @@ use non0\socket\service;
 use non0\socket\message;
 
 include 'vendor/autoload.php';
-
 $config = require 'config.php';
 
 $socket = new service($config);
 
 //注册服务
-$socket::Register('system',function (message $message){
-    echo $message->get("message").PHP_EOL;
-
+$socket::Register('system',function (message $message)use ($socket){
     $data = [];
     $data['time'] = time();
     $data['type']='system';
     $data['message']=$message->get("message");
-    $message->send($data);
+    $message->send($data,$socket);
 });
-$socket::Register('message',function (message $message){
-    echo $message->get("message").PHP_EOL;
+$socket::Register('group',function (message $message) use($socket){
+    $data = [];
+    $data['time'] = time();
+    $data['type']='group';
+    $data['message']=$message->get("message");
+    $message->sendALL($data,$socket);
 });
-$socket::register('default',function (message $message){
-    echo 'Undefined type:'.$message->get('type').PHP_EOL;
+$socket::register('register',function (message $message) use($socket){
+    $user = [];
+    $user['name'] = $message->get('name');
+    $user['reg_time'] = time();
+    $socket->socket->users[$message->getKey()] = array_merge($socket->socket->users[$message->getKey()],$user);
+    $data['type']='register';
+    $data['message'] = '注册成功';
+    $data['time']  = time();
+    $message->send($data,$socket);
+    unset($data);
+    $data['type'] = 'group';
+    $data['message'] = $user['name'].'加入聊天室';
+    $data['time'] = time();
+    $message->sendALL($data,$socket);
+
+});
+$socket::register('getUsers',function (message $message) use($socket){
+    $data['type']='users';
+    $data['data'] = $socket->socket->users;
+    $data['time']  = time();
+    $message->send($data,$socket);
+
+
 });
 
+$socket::register('default',function (message $message) use($socket){
+    echo 'undefined packet:'.$message->get('type');
+});
+//$socket->socket->sockets
 $socket->read();

@@ -77,26 +77,12 @@ class socket
         socket_write($socket, $upgrade, strlen($upgrade . chr(0)));
     }
 
-    public function isClose($socket, $str)
-    {
-        $msg = unpack('H*', $str);
-        $head = substr($msg[1], 0, 2);
-        if ($head == '88') {
-            socket_close($this->sockets[$socket]);
-            var_dump($this->sockets[$socket]);
-            unset($this->sockets[$socket]);
-            $this->sendAll(json_encode(['time' => time(), '有用户退出平台']));
-            return true;
-        }
-        return false;
-    }
-
     /**
      * 解码数据帧
      * @param $str
      * @return string
      */
-    public function unCode($str, $socket)
+    public function unCode($str, $key)
     {
         $mask = array();
         $data = '';
@@ -126,6 +112,13 @@ class socket
                 $n++;
             }
             return $data;
+        }
+        if ($head == '88') {
+            socket_close($this->sockets[$key]);
+            unset($this->sockets[$key]);
+            unset($this->users[$key]);
+//            $this->sendAll(json_encode(['time' => time(), '有用户退出平台']));
+            return false;
         }
         return false;
 
@@ -184,21 +177,6 @@ class socket
         foreach ($hex as $i => $line) {
             echo sprintf('%6X', $offset) . ' : ' . implode(' ', str_split($line, 2)) . ' [' . $chars[$i] . ']' . $newline;
             $offset += $width;
-        }
-    }
-
-    function Hello()
-    {
-        $data = [];
-        $data['time'] = time();//时间戳
-        $data['type'] = 'hello';//心跳包
-        $this->sendAll($data);
-    }
-
-    function sendAll($data)
-    {
-        foreach ($this->sockets as $key => $socket) {
-            socket_write($socket, $data, strlen($data));
         }
     }
 }

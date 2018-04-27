@@ -67,7 +67,7 @@ class service
             //监听是否有新客户端连接
             $accept_resource = socket_accept($this->socket->master);
             if ($accept_resource === false) {
-                usleep(100);
+                usleep(100);//100微秒
 //                sleep(2);
             } elseif ($accept_resource > 0) {
                 $this->socket->sockets[] = $accept_resource;
@@ -88,20 +88,18 @@ class service
                             //执行握手动作
                             $this->socket->handShake($value, $string);
                             //设定user基本信息
-                            $this->socket->users[$this->socket->getKey($string)]['time'] = time();//该用户加入时间
-                            $this->socket->users[$this->socket->getKey($string)]['socket'] = $key;//在sockets中的key
+                            $this->socket->users[$key]['time'] = time();//该用户加入时间
+                            $this->socket->users[$key]['key'] = $this->socket->getKey($string);//在sockets中的key
                         } elseif ($string) {
                             //解析数据包
                             $data = $this->socket->unCode($string, $key);
                             if ($data) {
-//                                echo 'rec:'.$data;
                                 $data = json_decode($data,true);
-                                if(!self::getDispatcher()->hasListeners($data['type'])){
-                                    self::getDispatcher()->dispatch('default',new message($data));
+                                if(is_array($data) && isset($data['type']) && !self::getDispatcher()->hasListeners($data['type'])){
+                                   self::getDispatcher()->dispatch('default',new message($data,$key));
+                                }elseif(is_array($data) && isset($data['type'])){
+                                     self::getDispatcher()->dispatch($data['type'],new message($data,$key));
                                 }
-//                                if(is_array($data) && isset(self::$function->$data['type'])){
-                                    $event = self::getDispatcher()->dispatch($data['type'],new message($data,$value));
-//                                }
                             }
                         }
                     }
@@ -111,19 +109,7 @@ class service
     }
 
     /**
-     * 这里处理返回数据
-     */
-    public function collback($data, $socket)
-    {
-        $arr['rec'] = $data;
-        $arr['send'] = 'OK';
-        $arr['time'] = time();//当前时间戳
-        //对发送信息进行编码处理
-        $str = $this->socket->code(json_encode($arr));
-        socket_write($this->socket->sockets[$socket], $str, strlen($str));
-    }
-
-    /**
+     * 注册方法
      * @param $type
      * @param $callback
      * @param int $priority
