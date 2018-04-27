@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chatDemo</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+    <div id="messageBox">
+
+    </div>
+<div id="userEdit">
+    <input type="text" id="input">
+    <input type="button" value="发送" id="send">
+    <input type="button" value="发送" id="send2">
+    <input type="button" value="发送" id="send3">
+</div>
+</body>
+<script>
+    $(function () {
+        chat = new WebSocket("ws://127.0.0.1:3000");
+        if(chat.readyState==1){
+            console.log("已成功建立连接");
+        }
+        chat.onmessage = function (event) {
+
+            $("#messageBox").append("<div>"+$.parseJSON( event.data ).send+"</div>");
+        };
+       $("#send").click(function () {
+
+           $msg = new Object();
+           $msg.type='system';
+           $msg.time = ((new Date()).valueOf()).toString().substr(-3);
+           $msg.message = $("#input").val();
+           chat.send(JSON.stringify($msg));
+            $("#input").val("");
+        });
+        $("#send2").click(function () {
+
+            $msg = new Object();
+            $msg.type='message';
+            $msg.time = ((new Date()).valueOf()).toString().substr(-3);
+            $msg.message = $("#input").val();
+            chat.send(JSON.stringify($msg));
+            $("#input").val("");
+        });
+        $("#send3").click(function () {
+
+            $msg = new Object();
+            $msg.type='dd';
+            $msg.time = ((new Date()).valueOf()).toString().substr(-3);
+            $msg.message = $("#input").val();
+            chat.send(JSON.stringify($msg));
+            $("#input").val("");
+        });
+    })
+
+</script>
+
+</html>

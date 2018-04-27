@@ -1,0 +1,24 @@
+{
+  "name": "non0/socket",
+  "description": "socketdemo",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Yanlongli",
+      "email": "admin@yanlongli.com"
+    }
+  ],
+  "autoload":{
+    "classmap":["non0/socket"]
+  },
+  "require":{
+    "symfony/event-dispatcher": ">=2.6"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
+}
