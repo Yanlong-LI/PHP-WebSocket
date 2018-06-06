@@ -20,14 +20,14 @@ $socket::Register('system',function (message $message)use ($socket){
     $data = [];
     $data['time'] = time();
     $data['type']='system';
-    $data['message']=$message->get("message");
+    $data['message']=htmlspecialchars($message->get("message"));
     $message->send($data,$socket);
 });
 $socket::Register('group',function (message $message) use($socket){
     $data = [];
     $data['time'] = time();
     $data['type']='group';
-    $data['message']=$message->get("message");
+    $data['message']=htmlspecialchars($message->get("message"));
     $message->sendALL($data,$socket);
 });
 $socket::register('register',function (message $message) use($socket){
