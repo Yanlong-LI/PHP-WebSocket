@@ -10,5 +10,10 @@
 return array(
     'domain' => '127.0.0.1',
     'port' => '3000',
-    'debug' => 0
+    'debug' => 0,
+    'redis'=>[
+        'host'=>'',
+        'port'=>'',
+        'password'=>'',
+    ]
 );

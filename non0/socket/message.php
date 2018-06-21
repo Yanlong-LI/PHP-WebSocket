@@ -61,10 +61,15 @@ class message extends Event
      * 群发消息
      * @param $data
      * @param $service
+     * @param $self
      */
-    function sendALL($data, $service)
+    function sendALL($data, $service,$self = true)
     {
         foreach ($service->socket->sockets as $key => $socket) {
+            //如果是自身，并且self传递为否则不发送给自己
+            if($key==$this->key && !$self){
+                continue;
+            }
             socket_write($socket, $service->socket->code(json_encode($data)));
         }
     }

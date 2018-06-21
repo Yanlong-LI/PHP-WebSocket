@@ -6,7 +6,10 @@
  * Time: 下午 12:47
  * APPLICATION:
  */
+
 namespace non0\socket;
+
+use non0\socket\support\read;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class service
@@ -55,7 +58,7 @@ class service
         //关闭阻塞模式
         socket_set_nonblock($this->socket->master);
         //输出监听成功提示
-        echo 'server listen' . $this->domain . ':' . $this->port.PHP_EOL;
+        echo 'server listen' . $this->domain . ':' . $this->port . PHP_EOL;
     }
 
     /**
@@ -91,21 +94,72 @@ class service
                             $this->socket->users[$key]['time'] = time();//该用户加入时间
                             $this->socket->users[$key]['key'] = $this->socket->getKey($string);//在sockets中的key
                         } elseif ($string) {
-                            //解析数据包
-                            $data = $this->socket->unCode($string, $key);
-                            if ($data) {
-                                $data = json_decode($data,true);
-                                if(is_array($data) && isset($data['type']) && !self::getDispatcher()->hasListeners($data['type'])){
-                                   self::getDispatcher()->dispatch('default',new message($data,$key));
-                                }elseif(is_array($data) && isset($data['type'])){
-                                     self::getDispatcher()->dispatch($data['type'],new message($data,$key));
-                                }
-                            }
+                            self::handle($string,$key);
                         }
                     }
                 }
             }
         } while (true);
+    }
+
+    public function handle($string,$key,$bin = true)
+    {
+        if(strlen($string)<1){
+            return;
+        }
+        $read = new read($string);
+        if(!$bin){
+            $read->data = $string;
+        }
+        //解析第一bit
+        $head = $read->readByte();
+        //表示最后一帧
+        if (hexdec($head) < 128) {
+            echo 'undefined head ' . $head . PHP_EOL;
+            echo 'undefined pack ' . $read->data . PHP_EOL;
+            return;
+        }
+        if(hexdec($head)==136){
+            socket_close($this->socket->sockets[$key]);
+            echo 'user out：'.$this->socket->users[$key]['name'].PHP_EOL;
+            unset($this->socket->sockets[$key]);
+            unset($this->socket->users[$key]);
+            return;
+        }
+
+        /**
+         * 0x0 表示附加数据帧
+         * 0x1 表示文本数据帧
+         * 0x2 表示二进制数据帧
+         * 0x3-7 暂时无定义，为以后的非控制帧保留
+         * 0x8 表示连接关闭{"type":"register","time":1529562040214,"name":"王大爷"}
+         * 0x9 表示ping
+         * 0xA 表示pong
+         * 0xB-F 暂时无定义，为以后的控制帧保留
+         */
+        //掩码开关和数据长度
+        $mp = $read->readByte();
+
+        if (hexdec($mp) > 128) {
+            $len = hexdec($mp) - 128;
+            $read->maskingKey = $read->readBytes(4);
+        } else {
+            $len = hexdec($mp);
+        }
+        $maskHexData = $read->readString($len * 2);
+        $Hexdata = $read->masking($maskHexData);
+        $jsonStringData =  $read->hexToUtf8($Hexdata);
+        $data = json_decode($jsonStringData,true);
+        if (is_array($data) && isset($data['type']) && !self::getDispatcher()->hasListeners($data['type'])) {
+            self::getDispatcher()->dispatch('default', new message($data, $key));
+        } elseif (is_array($data) && isset($data['type'])) {
+            self::getDispatcher()->dispatch($data['type'], new message($data, $key));
+        } else {
+            echo 'unReadMSG'.$read->data.PHP_EOL;
+        }
+        //处理粘包
+        $data = substr($read->data,$read->index);
+        self::handle($data,$key,false);
     }
 
     /**

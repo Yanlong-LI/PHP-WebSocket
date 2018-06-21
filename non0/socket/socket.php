@@ -77,54 +77,6 @@ class socket
         socket_write($socket, $upgrade, strlen($upgrade . chr(0)));
     }
 
-    /**
-     * 解码数据帧
-     * @param $str
-     * @return string
-     */
-    public function unCode($str, $key)
-    {
-        $mask = array();
-        $data = '';
-        $msg = unpack('H*', $str);
-        $head = substr($msg[1], 0, 2);
-        if ($head == '81') {
-            $len = substr($msg[1], 2, 2);
-            $len = hexdec($len);//把十六进制的转换为十进制
-            if (substr($msg[1], 2, 2) == 'fe') {
-                $len = substr($msg[1], 4, 4);
-                $len = hexdec($len);
-                $msg[1] = substr($msg[1], 4);
-            } else if (substr($msg[1], 2, 2) == 'ff') {
-                $len = substr($msg[1], 4, 16);
-                $len = hexdec($len);
-                $msg[1] = substr($msg[1], 16);
-            }
-            $mask[] = hexdec(substr($msg[1], 4, 2));
-            $mask[] = hexdec(substr($msg[1], 6, 2));
-            $mask[] = hexdec(substr($msg[1], 8, 2));
-            $mask[] = hexdec(substr($msg[1], 10, 2));
-            $s = 12;
-            $n = 0;
-            $e = strlen($msg[1]) - 2;
-            for ($i = $s; $i <= $e; $i += 2) {
-                $data .= chr($mask[$n % 4] ^ hexdec(substr($msg[1], $i, 2)));
-                $n++;
-            }
-            return $data;
-        }
-        if ($head == '88') {
-            socket_close($this->sockets[$key]);
-            unset($this->sockets[$key]);
-            unset($this->users[$key]);
-//            $this->sendAll(json_encode(['time' => time(), '有用户退出平台']));
-            return false;
-        }
-        return false;
-
-
-    }
-
     function code($msg)
     {
         $frame = array();

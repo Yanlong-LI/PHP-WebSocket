@@ -69,10 +69,10 @@
         chat.onmessage = function (event) {
             if ($.parseJSON(event.data).type == 'register') {
                 $("#messageBox").append("<div class='message'>REGISTER:" + $.parseJSON(event.data).message + "</div>");
-                $msg = new Object();
-                $msg.type = 'getUsers';
-                $msg.time = ((new Date()).valueOf());
-                chat.send(JSON.stringify($msg));
+                    // $msg = new Object();
+                    // $msg.type = 'getUsers';
+                    // $msg.time = ((new Date()).valueOf());
+                    // chat.send(JSON.stringify($msg));
             } else if($.parseJSON(event.data).type == 'users'){
                 str = "";
                 for(i in $.parseJSON(event.data).data){
@@ -89,9 +89,12 @@
             $msg.time = ((new Date()).valueOf());
             $msg.name = '王大爷';
             chat.send(JSON.stringify($msg));
+            $msg = new Object();
+            $msg.type = 'getUsers';
+            $msg.time = ((new Date()).valueOf());
+            chat.send(JSON.stringify($msg));
 
-
-        }
+        };
         $("#send").click(function () {
 
             $msg = new Object();
