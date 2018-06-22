@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
 /**
  * Created by PhpStorm.
@@ -8,7 +15,7 @@
  * APPLICATION:
  */
 
-namespace non0\socket;
+namespace Non0\Socket;
 
 
 class socket
@@ -54,7 +61,7 @@ class socket
         if (preg_match("/Connection: (.*)\r\n/", $req, $match)) {
             $key = $match[1];
         }
-        if (strpos(strtolower($key), 'upgrade')) {
+        if (strpos(strtolower($key), 'upgrade')>=0 && strpos(strtolower($key), 'upgrade')!==false) {
             return true;
         } else {
             return false;

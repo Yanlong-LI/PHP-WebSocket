@@ -7,9 +7,10 @@
  * APPLICATION:
  */
 
-namespace non0\socket;
+namespace Non0\Socket;
 
-use non0\socket\support\read;
+use Non0\Socket\Support\Log;
+use Non0\Socket\Support\read;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class service
@@ -17,6 +18,9 @@ class service
     public $socket;
     private $domain;
     private $port;
+    static protected $config = [];
+    static public $lang;
+    protected $configPath = null;
 
 
     /**
@@ -26,14 +30,61 @@ class service
 
     /**
      * service constructor.
-     * @param $config
+     * @param null $configPath
      */
-    public function __construct($config)
+    public function __construct($configPath=null)
     {
-        ignore_user_abort(true); // 后台运行
-        set_time_limit(0); // 取消脚本运行时间的超时上限
-        $this->domain = $config['domain'];
-        $this->port = $config['port'];
+        if (!is_null($configPath)) {
+            $this->configPath = $configPath;
+        }
+        //初始化
+        $this->init();
+    }
+
+    /**
+     * 加载配置文件
+     */
+    protected function loadConfig()
+    {
+        //加载指定配置文件
+        if (!is_null($this->configPath)) {
+            self::$config = $this->configPath;
+            Log::debug("loadConfig：" . $this->configPath . PHP_EOL);
+            //加载本地化配置文件
+        } else if (file_exists(realpath('.') . '/config-local.php')) {
+            self::$config = require realpath('.') . '/config-local.php';
+            Log::debug("loadConfig：" . realpath('.') . '/config-local.php' . PHP_EOL);
+            //加载配置文件
+        } else if (file_exists(realpath('.') . '/config.php')) {
+            self::$config = require realpath('.') . '/config.php';
+            Log::debug("loadConfig：" . realpath('.') . '/config.php' . PHP_EOL);
+        } else {
+            Log::error('无法加载配置文件，请放置config.php到特定目录' . PHP_EOL);
+            exit(self::$lang['notFileConfig']);
+        }
+    }
+
+
+    /**
+     * 初始化
+     */
+    public function init()
+    {
+        //初始化语言包  默认为中文
+        static::$lang = require __DIR__ . "/lang/" . self::getConfig('language', 'zh-cn') . '.php';
+        //加载配置文件
+        $this->loadConfig();
+        //加载自定义语言包  默认为中文
+        static::$lang = require __DIR__ . "/lang/" . self::getConfig('language', 'zh-cn') . '.php';
+        //初始化时间为 特定区域
+        date_default_timezone_set(static::$config['timezone']);
+        Log::debug('kernel.init start');
+
+
+//        ignore_user_abort(true); // 后台运行
+//        set_time_limit(0); // 取消脚本运行时间的超时上限
+        $this->domain = self::$config['domain'];
+        $this->port = self::$config['port'];
         $this->socket = new socket();
         $this->socket->master = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         $this->open();
@@ -75,8 +126,6 @@ class service
             $accept_resource = socket_accept($this->socket->master);
             if ($accept_resource === false) {
                 usleep(100);//100微秒
-//                echo 'sleep 1s'.PHP_EOL;
-//                sleep(2);
             } elseif ($accept_resource > 0) {
                 //关闭每个socket资源的阻塞模式
                 socket_set_nonblock($accept_resource);
@@ -202,5 +251,30 @@ class service
             self::$dispatcher = new EventDispatcher();
         }
         return self::$dispatcher;
+    }
+    /**
+     * @param $name
+     * @param null $defaultValue
+     * @return mixed|null
+     */
+    public static function getConfig($name, $defaultValue = null)
+    {
+        if (array_key_exists($name, static::$config)) {
+            return static::$config[$name];
+        }
+        return $defaultValue;
+    }
+
+    /**
+     * @param $name
+     * @param null $defaultValue
+     * @return null
+     */
+    public static function setConfig($name, $defaultValue = null)
+    {
+        if (array_key_exists($name, static::$config)) {
+            return static::$config[$name] = $defaultValue;
+        }
+        return $defaultValue;
     }
 }

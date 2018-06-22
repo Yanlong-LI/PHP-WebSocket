@@ -1,6 +1,13 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
-namespace Jsdsx\Xdx\CreditReport;
+namespace Non0\Socket;
 
 /** Created by PhpStorm.
  * User: Yanlongli
@@ -9,7 +16,8 @@ namespace Jsdsx\Xdx\CreditReport;
  * APPLICATION:信达付信用报告
  */
 
-use Jsdsx\Xdx\CreditReport\Support\Log;
+use Non0\Socket\Support\Log;
+
 
 /**
  * Class Kernel
@@ -45,7 +53,7 @@ class Kernel
         //加载指定配置文件
         if (!is_null($this->configPath)) {
             self::$config = $this->configPath;
-            Log::debug("loadConfig：". $this->configPath . PHP_EOL);
+            Log::debug("loadConfig：" . $this->configPath . PHP_EOL);
             //加载本地化配置文件
         } else if (file_exists(realpath('.') . '/config-local.php')) {
             self::$config = require realpath('.') . '/config-local.php';
@@ -59,6 +67,7 @@ class Kernel
             exit(self::$lang['notFileConfig']);
         }
     }
+
 
     /**
      * 初始化

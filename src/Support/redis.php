@@ -7,7 +7,7 @@
  * APPLICATION:
  */
 
-namespace non0\socket\support;
+namespace Non0\Socket\Support;
 
 class redis
 {

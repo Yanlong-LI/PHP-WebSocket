@@ -1,13 +1,13 @@
 <?php
 
-namespace Xdf\Pay\Support;
+namespace Non0\Socket\Support;
 
-use Xdf\Pay\XdfException;
+use Non0\Socket\SocketException;
 
 class Json
 {
     /**
-     * 将数据编码为json，用于请求微信平台服务器
+     * 将数据编码为json，用于请求平台服务器
      * @param $data
      * @return string
      */
@@ -28,10 +28,9 @@ class Json
     }
 
     /**
-     * 解析微信平台返回的json字符串，转为数组，错误时，抛异常
      * @param $jsonStr
-     * @return array
-     * @throws XdfException
+     * @return mixed
+     * @throws SocketException
      */
     public static function parseOrFail($jsonStr)
     {
@@ -42,7 +41,7 @@ class Json
                 $arr['errmsg'] = 'Unknown';
             }
 
-            throw new XdfException($arr['errmsg'], $arr['errcode']);
+            throw new SocketException($arr['errmsg'], $arr['errcode']);
         }
         return $arr;
     }

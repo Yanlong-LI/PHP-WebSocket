@@ -1,16 +1,25 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
-namespace Jsdsx\Xdx\CreditReport\Support;
-
+namespace Non0\Socket\Support;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\RotatingFileHandler;
 
+
+/**
+ * Class Logger
+ * @package Non0\Socket\Support
+ */
 class Logger
 {
-    /**
-     * @var \Monolog\Logger
-     */
+
     private $logger = null;
 
     /**
@@ -36,6 +45,9 @@ class Logger
         $this->init();
     }
 
+    /**
+     *
+     */
     public function init()
     {
         if ($this->logger instanceof \Psr\Log\LoggerInterface) {

@@ -1,7 +1,6 @@
 <?php
 
-namespace Xdf\Pay\Support;
-
+namespace Non0\Socket\Support;
 class Curl
 {
 

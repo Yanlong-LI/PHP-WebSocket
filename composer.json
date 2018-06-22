@@ -10,10 +10,13 @@
     }
   ],
   "autoload":{
-    "classmap":["non0/socket"]
+    "psr-4": {
+      "Non0\\Socket\\": "src/"
+    }
   },
   "require":{
-    "symfony/event-dispatcher": ">=2.6"
+    "symfony/event-dispatcher": ">=2.6",
+    "monolog/monolog": "^1.23"
   },
   "repositories": {
     "packagist": {

@@ -17,8 +17,11 @@
 
 namespace Non0\Socket;
 
-
-class Exception
+/**
+ * Class SocketException
+ * @package Non0\Socket
+ */
+class SocketException extends \Exception
 {
 
 }

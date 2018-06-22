@@ -1,8 +1,17 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
-namespace Jsdsx\Xdx\CreditReport\Support;
+namespace Non0\Socket\Support;
 
-use Jsdsx\Xdx\CreditReport\Kernel;
+
+
+use Non0\Socket\Service;
 
 class Log
 {
@@ -20,7 +29,7 @@ class Log
     private static function init()
     {
         if (static::$logger === null) {
-            $config = Kernel::getConfig('log', array('class' => 'Jsdsx\Xdx\CreditReport\Support\Logger'));
+            $config = Service::getConfig('log', array('class' => 'Non0\Socket\Support\Logger'));
             $class = $config['class'];
             unset($config['class']);
             static::$logger = new $class($config);
