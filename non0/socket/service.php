@@ -72,7 +72,7 @@ class service
             //监听是否有新客户端连接
             $accept_resource = socket_accept($this->socket->master);
             if ($accept_resource === false) {
-                usleep(100000);//100微秒
+                usleep(100);//100微秒
                 echo 'sleep 1s'.PHP_EOL;
 //                sleep(2);
             } elseif ($accept_resource > 0) {
