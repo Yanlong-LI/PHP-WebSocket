@@ -9,7 +9,7 @@
 
 return array(
     'domain' => '0.0.0.0',
-    'port' => '5566',
+    'port' => '3000',
     'debug' => 0,
     'redis'=>[
         'host'=>'',
