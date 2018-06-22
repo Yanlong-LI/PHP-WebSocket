@@ -29,7 +29,7 @@ $socket::Register('group', function (message $message) use ($socket) {
     $data['time'] = time();
     $data['type'] = 'group';
     $data['message'] = htmlspecialchars($message->get("message"));
-    $message->sendALL($data, $socket);
+    $message->sendALL($data, $socket,false);
 });
 //用户注册
 $socket::register('register', function (message $message) use ($socket) {

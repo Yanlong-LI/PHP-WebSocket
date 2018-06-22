@@ -62,7 +62,7 @@
 </body>
 <script>
     $(function () {
-        chat = new WebSocket("ws://127.0.0.1:3000");
+        chat = new WebSocket("ws://check.x-d-x.com:5566/");
         if (chat.readyState == 1) {
             console.log("已成功建立连接");
         }
@@ -101,6 +101,7 @@
             $msg.type = 'group';
             $msg.time = ((new Date()).valueOf());
             $msg.message = $("#input").val();
+            console.log(JSON.stringify($msg).length);
             chat.send(JSON.stringify($msg));
             $("#input").val("");
         });

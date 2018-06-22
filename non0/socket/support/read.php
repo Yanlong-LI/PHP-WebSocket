@@ -44,14 +44,14 @@ class read
     {
         $data = substr($this->data, $this->index, 4);
         $this->index += 4;
-        return (int)$data;
+        return $data;
     }
 
     function readInt()
     {
         $data = substr($this->data, $this->index, 8);
         $this->index += 8;
-        return (int)$data;
+        return $data;
     }
 
     function readLen($len)

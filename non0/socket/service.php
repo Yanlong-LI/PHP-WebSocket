@@ -55,8 +55,10 @@ class service
             echo 'server listen fail:' . socket_strerror($ret);
             exit();
         }
-        //关闭阻塞模式
+
+        //关闭监听新客户端阻塞模式
         socket_set_nonblock($this->socket->master);
+
         //输出监听成功提示
         echo 'server listen' . $this->domain . ':' . $this->port . PHP_EOL;
     }
@@ -70,9 +72,12 @@ class service
             //监听是否有新客户端连接
             $accept_resource = socket_accept($this->socket->master);
             if ($accept_resource === false) {
-                usleep(100);//100微秒
+                usleep(100000);//100微秒
+                echo 'sleep 1s'.PHP_EOL;
 //                sleep(2);
             } elseif ($accept_resource > 0) {
+                //关闭每个socket资源的阻塞模式
+                socket_set_nonblock($accept_resource);
                 $this->socket->sockets[] = $accept_resource;
             } else {
                 echo "error: " . socket_strerror($accept_resource);
@@ -86,7 +91,7 @@ class service
                     //判断该资源对象是否为Socket，close后为unknown
                     if (get_resource_type($value) == 'Socket') {
                         //读取流数据
-                        $string = @socket_read($value, 8096);
+                        $string = @socket_read($value, 65535);
                         if ($string && $this->socket->isConnect($string)) {
                             //执行握手动作
                             $this->socket->handShake($value, $string);
@@ -139,9 +144,22 @@ class service
          */
         //掩码开关和数据长度
         $mp = $read->readByte();
-
-        if (hexdec($mp) > 128) {
+        if (hexdec($mp) > 128 && hexdec($mp)<254) {
             $len = hexdec($mp) - 128;
+            $read->maskingKey = $read->readBytes(4);
+        }elseif(hexdec($mp)==254){
+            $len = hexdec($read->readShort());
+            echo $len.PHP_EOL;
+            if($len<=0)die();
+            $read->maskingKey = $read->readBytes(4);
+        }elseif(hexdec($mp)==255){
+            $len = hexdec($read->readInt());
+            if($len<=0){
+                $read->index = $read->index-8;
+                echo $read->readInt();
+                echo $len.PHP_EOL;
+                die();
+            }
             $read->maskingKey = $read->readBytes(4);
         } else {
             $len = hexdec($mp);

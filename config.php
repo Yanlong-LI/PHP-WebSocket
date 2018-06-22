@@ -8,8 +8,8 @@
  */
 
 return array(
-    'domain' => '127.0.0.1',
-    'port' => '3000',
+    'domain' => '0.0.0.0',
+    'port' => '5566',
     'debug' => 0,
     'redis'=>[
         'host'=>'',
