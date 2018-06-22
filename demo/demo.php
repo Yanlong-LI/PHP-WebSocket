@@ -1,5 +1,9 @@
 <?php
 
+use Non0\Socket\message;
+use Non0\Socket\service;
+
+
 /**
  * Created by PhpStorm.
  * User: Yanlongli
@@ -7,12 +11,10 @@
  * Time: 上午 10:06
  * APPLICATION:
  */
-use non0\socket\service;
-use non0\socket\message;
 
-include 'vendor/autoload.php';
-$config = require 'config.php';
-$socket = new service($config);
+
+include '../vendor/autoload.php';
+$socket = new service();
 
 //注册服务
 //系统消息
