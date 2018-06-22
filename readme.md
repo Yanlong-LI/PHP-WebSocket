@@ -25,7 +25,8 @@ php demo.php
 或许哪天会重新写
 
 2018年6月22日
-修正单个socket在linux下同是阻塞问题
+修复NGINX代理WSS加密连接无法成功问题
+修复单个socket在linux下同是阻塞问题
 
 2018年6月20日
 

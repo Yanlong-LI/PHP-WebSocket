@@ -54,7 +54,7 @@ class socket
         if (preg_match("/Connection: (.*)\r\n/", $req, $match)) {
             $key = $match[1];
         }
-        if ($key == 'Upgrade') {
+        if (strpos(strtolower($key), 'upgrade')) {
             return true;
         } else {
             return false;

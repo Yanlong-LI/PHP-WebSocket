@@ -30,6 +30,8 @@ class service
      */
     public function __construct($config)
     {
+        ignore_user_abort(true); // 后台运行
+        set_time_limit(0); // 取消脚本运行时间的超时上限
         $this->domain = $config['domain'];
         $this->port = $config['port'];
         $this->socket = new socket();
@@ -73,7 +75,7 @@ class service
             $accept_resource = socket_accept($this->socket->master);
             if ($accept_resource === false) {
                 usleep(100);//100微秒
-                echo 'sleep 1s'.PHP_EOL;
+//                echo 'sleep 1s'.PHP_EOL;
 //                sleep(2);
             } elseif ($accept_resource > 0) {
                 //关闭每个socket资源的阻塞模式
