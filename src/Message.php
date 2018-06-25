@@ -1,11 +1,4 @@
 <?php
-/**
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
 
 /**
  * Created by PhpStorm.
@@ -46,7 +39,9 @@ class message extends Event
      */
     function get($name)
     {
-        return $this->message[$name];
+        if (isset($this->message[$name]))
+            return $this->message[$name];
+        return false;
     }
 
     function getKey()
@@ -70,11 +65,11 @@ class message extends Event
      * @param $service
      * @param $self
      */
-    function sendALL($data, $service,$self = true)
+    function sendALL($data, $service, $self = true)
     {
         foreach ($service->socket->sockets as $key => $socket) {
             //如果是自身，并且self传递为否则不发送给自己
-            if($key==$this->key && !$self){
+            if ($key == $this->key && !$self) {
                 continue;
             }
             socket_write($socket, $service->socket->code(json_encode($data)));

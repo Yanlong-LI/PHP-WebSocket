@@ -1,11 +1,4 @@
 <?php
-/**
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
 
 /**
  * Created by PhpStorm.
@@ -20,12 +13,19 @@ namespace Non0\Socket\Service;
 
 use Non0\Socket\Support\Curl;
 
-class User
+class User extends BaseService
 {
     public static $token;
 
-    static public function getUserInfoByToken()
+    /**
+     * @param $token
+     * @return mixed
+     * @throws \Non0\Socket\SocketException
+     */
+    static public function getUserInfoByToken($token)
     {
-//        Curl::get('')
+        $data = [];
+
+        return self::request(['token'=>$token],'','/user/info');
     }
 }

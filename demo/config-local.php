@@ -7,7 +7,7 @@
  */
 
 return array(
-    'api' => 'https://127.0.0.1',
+    'api' => 'https://check.x-d-x.com',
     'method' => 'get',
     'domain' => '0.0.0.0',
     'port' => '3000',
